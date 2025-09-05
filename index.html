@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4 MESES</title>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+  <style>
+    #heartCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none; /* 👈 Esto es clave: evita que bloquee clics */
+}
+body::before {
+  content: '';
+  position: fixed; top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-image:url('img/bob.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: brightness(1.2);
+  z-index: -1;
+}
+
+    /* Estilos base */
+body, html {
+  margin: 0; padding: 0;
+  font-family: 'Comic Sans MS', Arial, sans-serif;
+  text-align: center;
+}
+
+.container {
+  position: relative;
+  z-index: 2;
+  padding: 20px;
+  color: #fff;
+  text-shadow: 2px 2px #000;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 1s ease, transform 1s ease;
+  min-height: 100vh; /* ✅ Añadir esto ayuda */
+}
+
+.container.show {
+  opacity: 1; transform: scale(1);
+}
+h1 { font-size: 2.2em; margin: 0.5em; }
+p { font-size: 1.1em; }
+.btn {
+  position: relative;
+  background: linear-gradient(to bottom, #f48fb1, #ec407a);
+  color: white;
+  border: none;
+  border-radius: 50% 50% 40% 40%;
+  padding: 18px 25px;
+  font-size: 1em;
+  margin: 0.5em;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease, background 0.3s ease;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  z-index: 1;
+}
+
+.btn:hover {
+  background: linear-gradient(to bottom, #ec407a, #d81b60);
+  transform: scale(1.05);
+}
+.btn::before, .btn::after {
+  content: "";
+  position: absolute;
+  bottom: -12px;
+  width: 8px;
+  height: 20px;
+  background: #ec407a;
+  border-radius: 50%;
+  animation: wave 1s ease-in-out infinite;
+}
+
+.btn::before {
+  left: 30%;
+  animation-delay: 0s;
+}
+
+.btn::after {
+  right: 30%;
+  animation-delay: 0.5s;
+}
+
+@keyframes wave {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(3px) rotate(5deg);
+  }
+}
+img.bob {
+  width: 140px;
+  margin-top: 15px;
+}
+
+/* Carrusel */
+#carruselContainer {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+#carruselModal {
+  background: #222f3e;
+  padding: 20px 30px;
+  border-radius: 15px;
+  max-height: 80vh;
+  max-width: 500px;
+  width: 90vw;
+  color: #fff;
+  overflow-y: auto;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+.carrusel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: nowrap;
+  margin-top: 10px;
+}
+.foto-nosotros {
+  width: 250px;
+  max-width: 80vw;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease;
+}
+.foto-nosotros:hover {
+  transform: scale(1.05);
+}
+.flecha {
+  font-size: 1.5em;
+  padding: 10px 15px;
+  background: #30475e;
+  color: #ffdd59;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.3s;
+}
+.flecha:hover {
+  background: #222f3e;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  h1 { font-size: 1.8em; }
+  .btn {
+    padding: 10px 16px;
+    font-size: 0.9em;
+  }
+}
+
+@media (max-width: 500px) {
+  .foto-nosotros {
+    width: 90vw;
+  }
+}
+#cartaContainer {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+}
+#cartaModal {
+  background: #fff9f3;
+  color: #333;
+  padding: 30px;
+  border-radius: 20px;
+  max-width: 500px;
+  width: 90vw;
+  text-align: left;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  font-family: 'Raleway', sans-serif;
+  line-height: 1.6;
+  position: relative;
+  animation: aparecerCarta 0.6s ease;
+  text-shadow: none !important;
+  max-height: 80vh;
+overflow-y: auto;
+
+}
+#cartaModal::-webkit-scrollbar {
+  width: 8px;
+}
+
+#cartaModal::-webkit-scrollbar-thumb {
+  background: #ec407a;
+  border-radius: 10px;
+}
+
+#cartaModal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+
+@keyframes aparecerCarta {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+#cartaModal h2 {
+  text-align: center;
+  margin-top: 0;
+  color: #e17055;
+}
+.medusa-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  font-size: 1.8em;
+  background: radial-gradient(circle at 30% 30%, #ffb6c1, #ec407a);
+  border: 3px solid #fff;
+  color: #fff;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.3s ease;
+  box-shadow: 0 0 15px rgba(0,0,0,0.4);
+  z-index: 2;
+}
+
+.medusa-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Tentáculos de medusa (pseudoelementos) */
+.medusa-btn::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 12px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow:
+    -12px 0 #fff,
+    -6px 0 #fff,
+     0px 0 #fff,
+     6px 0 #fff,
+    12px 0 #fff;
+  animation: tentacleWiggle 1s infinite ease-in-out;
+}
+
+@keyframes tentacleWiggle {
+  0%, 100% { transform: translateX(-50%) rotate(0deg); }
+  50% { transform: translateX(-50%) rotate(5deg); }
+}
+
+
+
+  </style>
+</head>
+<body>
+ <canvas id="heartCanvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none;"></canvas>
+  <div class="container" id="contenedorSorpresa">
+    <h1>¡FELICES 4 MESES MI AMOR ,💛!</h1>
+    <p>¡QUIERO AMARTE POR SIEMPRE!</p>
+    <p id="contador"></p>
+    <button class="btn" onclick="mostrarMensaje()">PRESIONA CORAZON 🍔</button>
+    <p id="mensaje">Te amo de aquí a la luna a pasitos de tortuga</p>
+    <img src="img/amor.jpg" class="bob" alt="Bob Esponja feliz">
+    <div style="margin-top:20px;">
+      <button class="btn" onclick="descargarTarjeta()">📥 Descargar</button>
+      <button class="btn" onclick="compartirWhatsApp()">📲 Compartir</button>
+      <button class="btn" onclick="mostrarCarrusel()">Ver nuestras fotos 📸</button>
+      <button class="btn" onclick="mostrarCarta()">💌 Leer mi carta</button>
+
+<div id="cartaContainer" style="display:none;">
+  <div id="cartaModal">
+    <h2>💌 Una carta para ti</h2>
+<p>
+  Mi amor...<br><br>
+
+  Hoy celebramos 4 meses de amor, risas, aventuras y momentos inolvidables. <br>
+  Gracias por ser esa personita tan especial que llegó a cambiar mi mundo para bien. Desde que te conocí, mis días tienen más sentido y más motivos para ser feliz. 🌟<br><br>
+
+  Eres lo más bonito que me pudo pasar en esta vida, lo más real, lo más puro, lo más mío. ❤️💛❤️✨<br>
+  Incluso en los días que estamos lejos físicamente, te siento aquí, conmigo, en cada pensamiento, en cada canción, en cada risa que se me escapa pensando en ti. Porque tú estás en todo, y eso me hace feliz. 💭<br><br>
+
+  Estos 4 meses han sido mágicos. Me has enseñado lo que es amar de verdad, con paciencia, con detalles, con entrega. Me haces sentir seguro, amado, valorado... Me haces sentir que por fin encontré a mi lugar favorito: tú. 🏠💕<br><br>
+
+  Quiero seguir creando recuerdos contigo, seguir compartiendo sueños, seguir creciendo como equipo. Porque quiro todo contigo, porque estando a tu lado incluso lo más simple se vuelve especial. 🌈<br><br>
+
+  No importa cuánta distancia haya, mi corazón siempre va a buscarte y encontrarte. Porque tú eres mi persona favorita, mi amor eterno. ❤️❤️<br><br>
+
+  Gracias por quedarte, por elegirnos cada día. Gracias por ser tú. Por todo eso y más...❤️❤️ <br><br>
+
+  <strong>¡TE EXTRAÑO,MI AMOR! y 💛 Te amo más de lo que las palabras pueden decir.</strong><br><br>
+
+  Con todo mi corazón,<br>
+  🧽 Tu novio 💛
+</p>
+
+    <button class="btn" onclick="cerrarCarta()" style="margin-top:15px;">Cerrar 💌</button>
+  </div>
+</div>
+
+
+<div id="carruselContainer" style="display:none;">
+  <div id="carruselModal">
+    <h2>AQUI AGREGAREMOS NUESTRAS FOTOS JUNTOS  💖</h2>
+    <div class="carrusel">
+     <button class="btn medusa-btn" onclick="cambiarImagen(-1)">💖</button>
+<img id="imagenCarrusel" src="img/amor_2.jpg" alt="Foto juntos" class="foto-nosotros">
+<button class="btn medusa-btn" onclick="cambiarImagen(1)">💖</button>
+    </div>
+    <button class="btn" onclick="cerrarCarrusel()" style="margin-top: 15px;">Cerrar ✖️</button>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+  <script>
+  // Mostrar contenido con animación al cargar
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      document.getElementById('contenedorSorpresa').classList.add('show');
+    }, 500);
+  });
+
+  // Mostrar mensaje personalizado
+function mostrarMensaje() {
+  document.getElementById("mensaje").innerText = 
+    `Hice esto para ti porque, aunque estés un poco lejos, quiero que sientas lo cerca que estás de mi corazón.
+La distancia nunca será un obstáculo para este amor tan bonito que compartimos.
+Te amo muchísimo, bebé. 💛🍔`;
+}
+
+  // Contador de tiempo desde una fecha
+  function iniciarContador(fecha) {
+    const start = new Date(fecha);
+    setInterval(() => {
+      const now = new Date();
+      let a = now.getFullYear() - start.getFullYear();
+      let m = now.getMonth() - start.getMonth();
+      let d = now.getDate() - start.getDate();
+      let h = now.getHours() - start.getHours();
+      let min = now.getMinutes() - start.getMinutes();
+      let s = now.getSeconds() - start.getSeconds();
+
+      if (s < 0) { s += 60; min--; }
+      if (min < 0) { min += 60; h--; }
+      if (h < 0) { h += 24; d--; }
+      if (d < 0) {
+        const prev = new Date(now.getFullYear(), now.getMonth(), 0);
+        d += prev.getDate(); m--;
+      }
+      if (m < 0) { m += 12; a--; }
+
+      document.getElementById("contador").innerText =
+        `Llevamos ${a} año(s), ${m} mes(es), ${d} día(s), ${h} h, ${min} min y ${s} s.`;
+    }, 1000);
+  }
+
+  iniciarContador('2025-05-05T00:00:00');
+
+  // Descargar tarjeta como archivo HTML
+  function descargarTarjeta() {
+    const blob = new Blob([document.documentElement.outerHTML], { type: "text/html" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "tarjeta_bob_esponja.html";
+    link.click();
+  }
+
+  // Compartir por WhatsApp
+  function compartirWhatsApp() {
+    const msg = encodeURIComponent("¡Mira esta sorpresa de Bob Esponja que hice para ti! Ábrela desde tu cel o compu 💛");
+    window.open(`https://wa.me/?text=${msg}`, '_blank');
+  }
+
+  // --- Corazones y burbujas animadas ---
+  const canvas = document.getElementById('heartCanvas');
+  const ctx = canvas.getContext('2d');
+  let w = canvas.width = window.innerWidth;
+  let h = canvas.height = window.innerHeight;
+
+  window.addEventListener('resize', () => {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  });
+
+class Particle {
+  constructor(type = "bubble") {
+    this.x = Math.random() * w;
+    this.y = h + Math.random() * 100;
+    this.size = 10 + Math.random() * 20;
+    this.speed = 0.5 + Math.random() * 1.5;
+    this.opacity = 0.3 + Math.random() * 0.5;
+    this.swing = Math.random() * 2 * Math.PI;
+    this.type = type;
+    this.color = type === "heart" ? `rgba(255,0,100,${this.opacity})`
+            : type === "medusa" ? `rgba(255,192,255,${this.opacity})`
+            : `rgba(173,216,230,${this.opacity})`;
+
+  }
+
+  draw() {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+
+    if (this.type === "heart") {
+      ctx.scale(this.size / 30, this.size / 30);
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo(0, -3, -5, -15, -15, -15);
+      ctx.bezierCurveTo(-35, -15, -35, 10, -35, 10);
+      ctx.bezierCurveTo(-35, 25, -20, 40, 0, 50);
+      ctx.bezierCurveTo(20, 40, 35, 25, 35, 10);
+      ctx.bezierCurveTo(35, 10, 35, -15, 15, -15);
+      ctx.bezierCurveTo(5, -15, 0, -3, 0, 0);
+      ctx.closePath();
+      ctx.fillStyle = this.color;
+      ctx.fill();
+    } else if (this.type === "medusa") {
+      // Cabeza
+      ctx.beginPath();
+      ctx.ellipse(0, 0, this.size * 0.5, this.size * 0.3, 0, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.fill();
+
+      // Tentáculos
+      for (let i = -1; i <= 1; i++) {
+        ctx.beginPath();
+        ctx.moveTo(i * this.size * 0.2, this.size * 0.1);
+        ctx.quadraticCurveTo(
+          i * this.size * 0.2 + 5 * Math.sin(this.swing * 2),
+          this.size * 0.4,
+          i * this.size * 0.2,
+          this.size * 0.6
+        );
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    } else {
+      // Burbujas
+      ctx.beginPath();
+      ctx.arc(0, 0, this.size / 2, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.fill();
+    }
+
+    ctx.restore();
+  }
+
+  update() {
+    this.y -= this.speed;
+    this.x += Math.sin(this.swing) * 0.5;
+    this.swing += 0.02;
+
+    if (this.y < -50) {
+      Object.assign(this, new Particle(this.type));
+      this.y = h + Math.random() * 100;
+    }
+  }
+}
+
+
+  // --- Carrusel de fotos ---
+  const imagenesCarrusel = [
+    "img/amor.jpg",
+    "img/amor_2.jpg",
+    "img/amor_3.jpg",
+    "img/amor_4.jpg",
+    "img/amor_6.jpg"
+  ];
+  let indiceActual = 0;
+
+  function mostrarCarrusel() {
+    document.getElementById("carruselContainer").style.display = "flex";
+    document.body.style.overflow = "hidden";
+  }
+
+  function cerrarCarrusel() {
+    document.getElementById("carruselContainer").style.display = "none";
+    document.body.style.overflow = "auto";
+  }
+
+  function cambiarImagen(direccion) {
+    indiceActual = (indiceActual + direccion + imagenesCarrusel.length) % imagenesCarrusel.length;
+    document.getElementById("imagenCarrusel").src = imagenesCarrusel[indiceActual];
+  }
+
+  // Cerrar carrusel con Escape
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') cerrarCarrusel();
+  });
+
+  // Cerrar al hacer clic fuera del modal
+  document.getElementById("carruselContainer").addEventListener("click", (e) => {
+    if (e.target === e.currentTarget) cerrarCarrusel();
+  });
+
+  
+
+  // ...resto de tu JS...
+ function mostrarCarta() {
+  document.getElementById("cartaContainer").style.display = "flex";
+  document.body.style.overflow = "hidden";
+  document.getElementById("cartaModal").scrollTop = 0; // 👈 esto asegura que empiece desde arriba
+}
+
+
+function cerrarCarta() {
+  document.getElementById("cartaContainer").style.display = "none";
+  document.body.style.overflow = "auto";
+}
+
+  
+</script>
+<script>
+// Inicializar partículas (mezcla de burbujas, corazones y medusas)
+const particleTypes = ["heart", "medusa", "bubble"];
+const particles = Array.from({ length: 100 }, () => {
+  const type = particleTypes[Math.floor(Math.random() * particleTypes.length)];
+  return new Particle(type);
+});
+
+// Animar partículas
+function animate() {
+  ctx.clearRect(0, 0, w, h);
+  particles.forEach(p => {
+    p.update();
+    p.draw();
+  });
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+
+</body>
+</html>
